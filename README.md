@@ -1,59 +1,52 @@
-# AI/ML Developer(Jayadhi Limited)
+# 🧠 Emotion Detection using Text Classification
 
-Emotion Detection using Text Classification
-Dataset Used
-The model is trained and evaluated using the Emotion Dataset from Kaggle, which contains text samples labeled with seven distinct emotion categories:
+## 📊 Dataset Used
+This project uses the **Emotion Dataset from Kaggle**, containing labeled text samples across the following emotion categories:
 
-Anger
+- 😠 Anger  
+- 🤢 Disgust  
+- 😨 Fear  
+- 😊 Joy  
+- 😢 Sadness  
+- 😲 Surprise  
+- 😐 Neutral  
 
-Disgust
+## 🛠️ Approach Summary
+The notebook applies a deep learning approach to detect emotions in text, involving the following steps:
 
-Fear
+1. **Data Preprocessing**
+   - Tokenization and stopword removal  
+   - Text normalization and sequence padding  
 
-Joy
+2. **Model Architecture**
+   - **Embedding Layer**: Converts words to dense vectors  
+   - **LSTM Layer**: Captures temporal dependencies  
+   - **Dense Layer**: Outputs emotion probabilities using softmax  
 
-Sadness
+3. **Training & Evaluation**
+   - Loss Function: `categorical_crossentropy`  
+   - Optimizer: `adam`  
+   - Evaluation Metric: `accuracy`  
 
-Surprise
+## 📦 Dependencies
 
-Neutral
+Make sure the following Python libraries are installed:
 
-Approach Summary
-This project implements a text-based emotion detection model. The main steps include:
+```bash
+numpy
+pandas
+matplotlib
+seaborn
+scikit-learn
+tensorflow
+keras
+nltk
 
-Data Preprocessing:
 
-Tokenization and stopword removal
 
-Text normalization and padding for input sequences
-
-Model Architecture:
-
-An Embedding layer for text representation
-
-LSTM (Long Short-Term Memory) layers for sequential modeling
-
-Dense output layer with softmax activation for multi-class emotion classification
-
-Training and Evaluation:
-
-The model is trained using categorical cross-entropy loss
-
-Accuracy is used as the primary evaluation metric
-
-Dependencies
-To run this notebook, the following libraries are required:
+Install them using pip:
 
 bash
 Copy
 Edit
-numpy  
-pandas  
-matplotlib  
-seaborn  
-scikit-learn  
-tensorflow  
-keras  
-nltk  
-Ensure that all dependencies are installed using pip or conda before execution.
-
+pip install numpy pandas matplotlib seaborn scikit-learn tensorflow keras nltk
