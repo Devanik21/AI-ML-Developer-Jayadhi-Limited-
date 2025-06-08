@@ -20,8 +20,38 @@ st.title("🧠 Real-time Emotion Classifier using Random Forest")
 # 📂 Load data
 @st.cache_data
 def load_data():
-    df = pd.read_csv("Emotion_classify_Data.csv")
-    df = df.rename(columns=lambda x: x.strip())
+    try:
+        df = pd.read_csv("Emotion_classify_Data.csv")
+    except FileNotFoundError:
+        st.error("Error: 'Emotion_classify_Data.csv' not found. Please ensure the file is in the correct directory.")
+        return pd.DataFrame(columns=['text', 'emotion']) # Return empty DataFrame with expected schema
+    except pd.errors.EmptyDataError:
+        st.error("Error: 'Emotion_classify_Data.csv' is empty.")
+        return pd.DataFrame(columns=['text', 'emotion'])
+    except Exception as e: # Catch other potential pandas read_csv errors
+        st.error(f"Error reading 'Emotion_classify_Data.csv': {e}")
+        return pd.DataFrame(columns=['text', 'emotion'])
+
+    if df.empty:
+        st.warning("'Emotion_classify_Data.csv' is empty or could not be parsed correctly.")
+        return pd.DataFrame(columns=['text', 'emotion'])
+
+    # Strip whitespace and convert column names to lowercase for consistency
+    df.columns = [col.strip().lower() for col in df.columns]
+
+    # Assume the first column is text and the second is emotion.
+    # Rename them to 'text' and 'emotion' respectively.
+    if len(df.columns) >= 2:
+        df = df.rename(columns={df.columns[0]: 'text', df.columns[1]: 'emotion'})
+    elif len(df.columns) == 1:
+        # If only one column, assume it's 'text'. 'emotion' will be missing.
+        df = df.rename(columns={df.columns[0]: 'text'})
+        st.warning("CSV has only one column, assumed as 'text'. 'emotion' column is missing.")
+        df['emotion'] = pd.NA # Add placeholder for 'emotion'
+    else:
+        st.error("CSV has no columns. Please check the file.")
+        return pd.DataFrame(columns=['text', 'emotion'])
+
     return df
 
 df = load_data()
@@ -29,6 +59,11 @@ st.subheader("📄 Dataset Sample")
 st.write(df.head())
 
 # 🧼 Preprocess
+# Ensure 'text' column exists and handle potential missing values before applying clean_text
+if 'text' not in df.columns:
+    st.error("Critical error: 'text' column is missing from the DataFrame. Cannot proceed with preprocessing.")
+    st.stop() # Stop execution if 'text' column isn't there
+
 stop_words = set(stopwords.words('english'))
 def clean_text(text):
     text = re.sub(r"http\S+|@\S+|#\S+|[^A-Za-z0-9\s]", "", str(text))
@@ -39,6 +74,11 @@ def clean_text(text):
 df['text'] = df['text'].apply(clean_text)
 
 # 🔢 Features & Labels
+# Ensure 'emotion' column exists
+if 'emotion' not in df.columns:
+    st.error("Critical error: 'emotion' column is missing from the DataFrame. Cannot proceed with model training.")
+    st.stop() # Stop execution
+
 X = df['text']
 y = df['emotion'].astype(str)
 
